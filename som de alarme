@@ -1,33 +1,44 @@
-let timerDuration = 25 * 60; // 25 minutos em segundos
-let timer;
-let isRunning = false;
+let duracaoTemporizador = 25 * 60; // 25 minutos em segundos
+let temporizador;
+let emExecucao = false;
 
-const timerDisplay = document.getElementById("timer");
-const startBtn = document.getElementById("startBtn");
-const alarm = document.getElementById("alarm");
+const displayTemporizador = document.getElementById("temporizador");
+const botaoIniciar = document.getElementById("botaoIniciar");
+const botaoResetar = document.getElementById("botaoResetar"); // Botão de reset
+const alarme = document.getElementById("alarme");
 
-startBtn.addEventListener("click", startTimer);
+botaoIniciar.addEventListener("click", iniciarTemporizador);
+botaoResetar.addEventListener("click", resetarTemporizador); // Evento de reset
 
-function startTimer() {
-    if (isRunning) return; // Evita iniciar múltiplos timers
-    isRunning = true;
+function iniciarTemporizador() {
+    if (emExecucao) return; // Evita iniciar múltiplos temporizadores
+    emExecucao = true;
+    atualizarDisplay(); // Atualiza a exibição ao iniciar
 
-    timer = setInterval(() => {
-        if (timerDuration <= 0) {
-            clearInterval(timer);
-            alarm.play(); // T toca o som de alarme
-            isRunning = false;
+    temporizador = setInterval(() => {
+        if (duracaoTemporizador <= 0) {
+            clearInterval(temporizador);
+            alarme.play(); // T toca o som de alarme
+            emExecucao = false;
             return;
         }
 
-        timerDuration--;
-        updateDisplay();
+        duracaoTemporizador--;
+        atualizarDisplay();
     }, 1000);
 }
 
-function updateDisplay() {
-    const minutes = Math.floor(timerDuration / 60);
-    const seconds = timerDuration % 60;
+function atualizarDisplay() {
+    const minutos = Math.floor(duracaoTemporizador / 60);
+    const segundos = duracaoTemporizador % 60;
 
     // Formata a exibição do temporizador
-    timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    displayTemporizador.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+}
+
+function resetarTemporizador() {
+    clearInterval(temporizador);
+    duracaoTemporizador = 25 * 60; // Reseta para 25 minutos
+    emExecucao = false;
+    atualizarDisplay(); // Atualiza a exibição para refletir o reset
+}
